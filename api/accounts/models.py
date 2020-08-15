@@ -5,6 +5,7 @@ class UserModel(models.Model):
     email = models.EmailField( max_length=254)
     otp = models.CharField(unique=True, max_length=6)
     session_timestamp = models.TimeField(auto_now = True)
+    logged_in = models.BooleanField(default=False)
 
 
 class EmailInputModel(models.Model):
@@ -12,4 +13,4 @@ class EmailInputModel(models.Model):
 
 class RegisterModel(models.Model):
     email = models.EmailField(unique=True, max_length=254)
-    otp = models.IntegerField()
+    otp = models.CharField(unique=True, max_length=6)

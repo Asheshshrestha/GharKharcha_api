@@ -10,4 +10,4 @@ class EmailInputSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = RegisterModel
-        field = ['email','otp']
+        fields = ['email','otp']
