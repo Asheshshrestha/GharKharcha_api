@@ -8,21 +8,25 @@ from library.otp_generator import generateOTP
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.core.validators import RegexValidator
+from django.utils.translation import gettext_lazy as _
 
 class MyUserManager(BaseUserManager):
+
     def create_user(self,phone,password=None):
         if not phone:
             raise ValueError("Users must have a phone number")
-        user = self.model(phone = phone,)
+        user = self.model(phone = phone)
         user.set_password(password)
         user.save(using=self._db)
         return user
+
     def create_superuser(self,phone,password = None):
         user = self.create_user(
             phone=phone,
             password=password
         )
-        user.is_admin = True
+        user.admin = True
+        user.staff = True
         user.save(using=self._db)
         return user
 
@@ -33,9 +37,9 @@ class User(AbstractBaseUser):
     phone = models.CharField(validators=[phone_regex],max_length=15,unique=True)
     name = models.CharField(max_length=20,blank=True,null=True)
     first_login = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    active = models.BooleanField(_('active'),default=True)
+    staff = models.BooleanField(default=False)
+    admin = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD  = 'phone'
@@ -45,12 +49,21 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.phone
+
     @property
-    def is_admin(self):
+    def is_superuser(self):
         return self.admin
+    @property
+    def is_staff(self):
+        return self.staff
     @property
     def is_active(self):
         return self.active
 
+    def has_perm(self,perm,obj=None):
+        return self.admin
+
+    def has_module_perms(self,app_label):
+        return True
 
 
