@@ -29,6 +29,14 @@ class MyUserManager(BaseUserManager):
         user.staff = True
         user.save(using=self._db)
         return user
+    def create_staffuser(self,phone,password=None):
+        user = self.create_user(
+            phone=phone,
+            password=password
+        )
+        user.staff = True
+        user.save(using=self._db)
+        return user
 
 
 

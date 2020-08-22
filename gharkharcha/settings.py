@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     'api.calculation',
 
     #Third party apps
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth'
 ]
 
 MIDDLEWARE = [
